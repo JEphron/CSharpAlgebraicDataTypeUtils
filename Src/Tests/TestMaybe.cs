@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using JetBrains.Annotations;
 using NUnit.Framework;
 
 namespace JME.UnionTypes.Tests
@@ -199,6 +200,62 @@ namespace JME.UnionTypes.Tests
             Assert.Fail("match should execute immediately");
         }
 
+        [Test]
+        public void TestMatchSomeObjectUsingAValueForSomeAndAValueForNoneReturnsTheValueForSome()
+        {
+            var maybeList = new Maybe<List<int>>(new List<int> {1,2,3});
+            const string someValue = "some";
+            const string noneValue = "none";
+            var match = maybeList.Match(some: someValue, none: noneValue);
+            Assert.That(match, Is.EqualTo(someValue));
+        }
 
+        [Test]
+        public void TestMatchNoneObjectUsingAValueForSomeAndAValueForNoneReturnsTheValueForNone()
+        {
+            var maybeList = new Maybe<List<int>>();
+            const string someValue = "some";
+            const string noneValue = "none";
+            var match = maybeList.Match(some: someValue, none: noneValue);
+            Assert.That(match, Is.EqualTo(noneValue));
+        }
+
+        [Test]
+        public void TestMapReturnsSomeWhenCalledOnSome()
+        {
+            var maybeList = new Maybe<List<string>>(new List<string>{"a", "b"});
+            var mapResult = maybeList.Map(list => list[0]);
+            Assert.That(mapResult.IsSome);
+        }
+
+        [Test]
+        public void TestMapReturnsNoneWhenCalledOnNone()
+        {
+            var maybeList = new Maybe<List<string>>();
+            var mapResult = maybeList.Map(list => list[0]);
+            Assert.That(mapResult.IsNone);
+        }
+
+        [Test]
+        public void TestOkayOrReturnsOkayWhenCalledOnSome()
+        {
+            var errorValue = "error";
+            var someValue = new List<string>{"foo", "bar"};
+            var maybeList = new Maybe<List<string>>(someValue);
+            var okayOr = maybeList.OkayOr(errorValue);
+            okayOr.Match(list => Assert.Pass(), err => Assert.Fail());
+            Assert.Fail("match should execute immediately");
+        }
+
+        [Test]
+        public void TestOkayOrReturnsErrorWhenCalledOnNone()
+        {
+            var errorValue = "error";
+            var someValue = new List<string>{"foo", "bar"};
+            var maybeList = new Maybe<List<string>>(someValue);
+            var okayOr = maybeList.OkayOr(errorValue);
+            okayOr.Match(list => Assert.Fail(), err => Assert.Pass());
+            Assert.Fail("match should execute immediately");
+        }
     }
 }
