@@ -19,21 +19,19 @@ namespace JME.UnionTypes
             _isSome = false;
         }
 
-        [Pure]
-        public bool IsSome()
+        public bool IsSome
         {
-            return _isSome;
+            get { return _isSome; }
         }
 
-        [Pure]
-        public bool IsNone()
+        public bool IsNone
         {
-            return !IsSome();
+            get { return !IsSome; }
         }
 
         public void Match([InstantHandle] Action<T> some, [InstantHandle] Action none)
         {
-            if (IsSome())
+            if (IsSome)
                 some(_t);
             else
                 none();
@@ -41,23 +39,23 @@ namespace JME.UnionTypes
 
         public TReturn Match<TReturn>([InstantHandle] Func<T, TReturn> some, [InstantHandle] Func<TReturn> none)
         {
-            return IsSome() ? some(_t) : none();
+            return IsSome ? some(_t) : none();
         }
 
         public TReturn Match<TReturn>(TReturn some, [InstantHandle] Func<TReturn> none)
         {
-            return IsSome() ? some : none();
+            return IsSome ? some : none();
         }
 
         public TReturn Match<TReturn>([InstantHandle] Func<T, TReturn> some, TReturn none)
         {
-            return IsSome() ? some(_t) : none;
+            return IsSome ? some(_t) : none;
         }
 
         [Pure]
         public TReturn Match<TReturn>(TReturn some, TReturn none)
         {
-            return IsSome() ? some : none;
+            return IsSome ? some : none;
         }
 
         public Maybe<TConverted> Map<TConverted>([InstantHandle] Func<T, TConverted> fn)
@@ -71,26 +69,26 @@ namespace JME.UnionTypes
         public Result<T, TErr> OkayOr<TErr>(TErr err)
         {
             return Match(
-                some: x => new Result<T, TErr>(x),
-                none: () => new Result<T, TErr>(err));
+                some: x => Result<T, TErr>.Okay(x),
+                none: () => Result<T, TErr>.Err(err));
         }
 
         [Pure]
         public T ValueOr(T defaultValue)
         {
-            return IsSome() ? _t : defaultValue;
+            return IsSome ? _t : defaultValue;
         }
 
         [Pure]
         [CanBeNull]
         public T OrDefault()
         {
-            return IsSome() ? _t : default(T);
+            return IsSome ? _t : default(T);
         }
 
         public T ValueOr([InstantHandle] Func<T> action)
         {
-            return IsSome() ? _t : action();
+            return IsSome ? _t : action();
         }
 
         [Pure]
@@ -107,7 +105,7 @@ namespace JME.UnionTypes
 
         public override string ToString()
         {
-            return string.Format("Maybe<{0}> [{1}]", typeof(T), IsSome() ? string.Format("Some({0})", _t) : "None()");
+            return string.Format("Maybe<{0}> [{1}]", typeof(T), IsSome ? string.Format("Some({0})", _t) : "None()");
         }
 
         public Maybe<TConverted> OrMap<TConverted>(Maybe<TConverted> t2, Action<T> t1)

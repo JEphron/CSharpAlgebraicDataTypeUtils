@@ -12,63 +12,63 @@ namespace JME.UnionTypes.Tests
         public void TestNonePrimitiveIsNone()
         {
             var maybeInt = new Maybe<int>();
-            Assert.IsTrue(maybeInt.IsNone());
+            Assert.That(maybeInt.IsNone);
         }
 
         [Test]
         public void TestNonePrimativeIsNotSome()
         {
             var maybeInt = new Maybe<int>();
-            Assert.IsFalse(maybeInt.IsSome());
+            Assert.That(maybeInt.IsSome, Is.False);
         }
 
         [Test]
         public void TestSomePrimativeIsSome()
         {
             var maybeInt = new Maybe<int>(1);
-            Assert.IsTrue(maybeInt.IsSome());
+            Assert.That(maybeInt.IsSome);
         }
 
         [Test]
         public void TestSomePrimativeIsNotNone()
         {
             var maybeInt = new Maybe<int>(1);
-            Assert.IsFalse(maybeInt.IsNone());
+            Assert.That(maybeInt.IsNone, Is.False);
         }
 
         [Test]
         public void TestNoneObjectIsNone()
         {
             var maybeList = new Maybe<List<int>>();
-            Assert.IsTrue(maybeList.IsNone());
+            Assert.That(maybeList.IsNone);
         }
 
         [Test]
         public void TestNoneObjectIsNotSome()
         {
             var maybeList = new Maybe<List<int>>();
-            Assert.IsFalse(maybeList.IsSome());
+            Assert.That(maybeList.IsSome, Is.False);
         }
 
         [Test]
         public void TestSomeObjectIsSome()
         {
             var maybeList = new Maybe<List<int>>(new List<int> {1, 2, 3});
-            Assert.IsTrue(maybeList.IsSome());
+            Assert.That(maybeList.IsSome);
         }
 
         [Test]
         public void TestSomeObjectIsNotNone()
         {
             var maybeList = new Maybe<List<int>>(new List<int> {1, 2, 3});
-            Assert.IsFalse(maybeList.IsNone());
+            Assert.That(maybeList.IsNone, Is.False);
         }
 
         [Test]
         public void TestNullIsNone()
         {
             var maybeList = new Maybe<List<int>>(null);
-            Assert.IsTrue(maybeList.IsNone());
+            Assert.That(maybeList.IsNone);
         }
 
         [Test]
@@ -105,7 +105,6 @@ namespace JME.UnionTypes.Tests
         public void TestMatchSomePrimativeReturnsSome()
         {
             var maybeInt = new Maybe<int>(1);
-            Assert.That(maybeInt.IsSome);
             var match = maybeInt.Match(some: i => 1, none: () => 0);
             Assert.That(match, Is.EqualTo(1));
         }
@@ -114,7 +113,6 @@ namespace JME.UnionTypes.Tests
         public void TestMatchNonePrimativeReturnsNone()
         {
             var maybeInt = new Maybe<int>();
-            Assert.That(maybeInt.IsNone);
             var match = maybeInt.Match(some: i => 1, none: () => 0);
             Assert.That(match, Is.EqualTo(0));
         }
