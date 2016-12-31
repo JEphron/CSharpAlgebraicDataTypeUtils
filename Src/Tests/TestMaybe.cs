@@ -91,16 +91,14 @@ namespace JME.UnionTypes.Tests
         public void TestMatchNonePrimativeTriggersNoneHandler()
         {
             var maybeInt = new Maybe<int>();
-            maybeInt.Match(some: i => Assert.Fail("[some] handler should not be called"), none: Assert.Pass);
-            Assert.Fail("Match(...) should execute immediately");
+            maybeInt.Match(some: i => Assert.Fail(), none: Assert.Pass);
         }
 
         [Test]
         public void TestMatchSomePrimativeTriggersSomeHandler()
         {
             var maybeInt = new Maybe<int>(1);
-            maybeInt.Match(some: i => Assert.Pass(), none: () => Assert.Fail("[none] handler should not be called"));
-            Assert.Fail("Match(...) should execute immediately");
+            maybeInt.Match(some: i => Assert.Pass(), none: Assert.Fail);
         }
 
         [Test]
@@ -125,16 +123,14 @@ namespace JME.UnionTypes.Tests
         public void TestMatchNoneObjectTriggersNoneHandlerImmediately()
         {
             var maybeList = new Maybe<List<int>>();
-            maybeList.Match(some: i => Assert.Fail("[some] handler should not be called"), none: Assert.Pass);
-            Assert.Fail("match should execute immediately");
+            maybeList.Match(some: i => Assert.Fail(), none: Assert.Pass);
         }
 
         [Test]
         public void TestMatchSomeObjectTriggersSomeHandlerImmediately()
         {
             var maybeList = new Maybe<List<int>>();
-            maybeList.Match(some: i => Assert.Fail("[some] handler should not be called"), none: Assert.Pass);
-            Assert.Fail("match should execute immediately");
+            maybeList.Match(some: i => Assert.Fail(), none: Assert.Pass);
         }
 
         [Test]
@@ -176,7 +172,7 @@ namespace JME.UnionTypes.Tests
             const string someValue = "some";
             Func<string> noneFunction = () =>
             {
-                Assert.Fail("[none] handler should not be called");
+                Assert.Fail();
                 return "none";
             };
             var match = maybeList.Match(some: someValue, none: noneFunction);
@@ -201,7 +197,7 @@ namespace JME.UnionTypes.Tests
             const string noneValue = "none";
             Func<List<int>, string> someFunction = lst =>
             {
-                Assert.Fail("[some] handler should not be called");
+                Assert.Fail();
                 return "some";
             };
             var match = maybeList.Match(some: someFunction, none: noneValue);
@@ -212,8 +208,7 @@ namespace JME.UnionTypes.Tests
         public void TestMatchSomeObjectUsingAFunctionForSomeAndAValueForNoneCallsTheFunctionImmediately()
         {
             var maybeList = new Maybe<List<int>>(new List<int> { 1, 2, 3 });
-            maybeList.Match(some: list => Assert.Pass(), none: () => Assert.Fail("[none] handler should not be called"));
-            Assert.Fail("match should execute immediately");
+            maybeList.Match(some: list => Assert.Pass(), none: Assert.Fail);
         }
 
         [Test]
@@ -260,7 +255,6 @@ namespace JME.UnionTypes.Tests
             var maybeList = new Maybe<List<string>>(someValue);
             var okayOr = maybeList.OkayOr(errorValue);
             okayOr.Match(list => Assert.Pass(), err => Assert.Fail());
-            Assert.Fail("match should execute immediately");
         }
 
         [Test]
@@ -271,7 +265,6 @@ namespace JME.UnionTypes.Tests
             var maybeList = new Maybe<List<string>>(someValue);
             var okayOr = maybeList.OkayOr(errorValue);
             okayOr.Match(list => Assert.Fail(), err => Assert.Pass());
-            Assert.Fail("match should execute immediately");
         }
     }
 }
