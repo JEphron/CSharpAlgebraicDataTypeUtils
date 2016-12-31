@@ -259,8 +259,7 @@ namespace JME.UnionTypes.Tests
         public void TestOkayOrReturnsErrorWhenCalledOnNone()
         {
             var errorValue = "error";
-            var someValue = new List<string>{"foo", "bar"};
-            var maybeList = new Maybe<List<string>>(someValue);
+            var maybeList = new Maybe<List<string>>();
             var okayOr = maybeList.OkayOr(errorValue);
             okayOr.Match(list => Assert.Fail(), err => Assert.Pass());
         }
