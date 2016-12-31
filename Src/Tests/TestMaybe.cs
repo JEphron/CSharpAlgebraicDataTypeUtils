@@ -72,6 +72,22 @@ namespace JME.UnionTypes.Tests
         }
 
         [Test]
+        public void TestMatchSomePrimativeTriggersHandlerImmediately()
+        {
+            var maybeInt = new Maybe<int>(10);
+            maybeInt.Match(some: i => Assert.Pass(), none: Assert.Pass);
+            Assert.Fail();
+        }
+
+        [Test]
+        public void TestMatchNonePrimativeTriggersHandlerImmediately()
+        {
+            var maybeInt = new Maybe<int>();
+            maybeInt.Match(some: i => Assert.Pass(), none: Assert.Pass);
+            Assert.Fail();
+        }
+
+        [Test]
         public void TestMatchNonePrimativeTriggersNoneHandler()
         {
             var maybeInt = new Maybe<int>();
