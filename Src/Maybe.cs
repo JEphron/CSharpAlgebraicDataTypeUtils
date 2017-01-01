@@ -79,16 +79,16 @@ namespace JME.UnionTypes
             return IsSome ? _t : defaultValue;
         }
 
+        public T ValueOr([InstantHandle] Func<T> action)
+        {
+            return IsSome ? _t : action();
+        }
+
         [Pure]
         [CanBeNull]
         public T OrDefault()
         {
             return IsSome ? _t : default(T);
-        }
-
-        public T ValueOr([InstantHandle] Func<T> action)
-        {
-            return IsSome ? _t : action();
         }
 
         [Pure]
@@ -106,17 +106,6 @@ namespace JME.UnionTypes
         public override string ToString()
         {
             return string.Format("Maybe<{0}> [{1}]", typeof(T), IsSome ? string.Format("Some({0})", _t) : "None()");
-        }
-
-        public Maybe<TConverted> OrMap<TConverted>(Maybe<TConverted> t2, Action<T> t1)
-        {
-            return Match(
-                some: t =>
-                {
-                    t1(t);
-                    return new Maybe<TConverted>();
-                },
-                none: t2);
         }
 
         public Maybe<T> And(Maybe<T> other)
