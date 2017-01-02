@@ -366,33 +366,38 @@ namespace JME.UnionTypes.Tests
         [Test]
         public void TestAndReturnsArgumentWhenCalledOnSome()
         {
+            const string bar = "bar";
             var maybeString = new Maybe<string>("foo");
-            var result = maybeString.And(new Maybe<string>("bar"));
-            Assert.That(result.OrDefault(), Is.EqualTo("bar"));
+            var result = maybeString.And(new Maybe<string>(bar));
+            Assert.That(result.OrDefault(), Is.EqualTo(bar));
         }
 
         [Test]
         public void TestOrReturnsSelfWhenCalledOnSome()
         {
-            var maybeString = new Maybe<string>("foo");
+            const string foo = "foo";
+            var maybeString = new Maybe<string>(foo);
             var result = maybeString.Or(new Maybe<string>("bar"));
-            Assert.That(result.OrDefault(), Is.EqualTo("foo"));
+            Assert.That(result.OrDefault(), Is.EqualTo(foo));
         }
 
         [Test]
         public void TestOrReturnsArgumentWhenCalledOnNone()
         {
+            const string bar = "bar";
             var maybeString = new Maybe<string>();
-            var result = maybeString.Or(new Maybe<string>("bar"));
-            Assert.That(result.OrDefault(), Is.EqualTo("bar"));
+            var result = maybeString.Or(new Maybe<string>(bar));
+            Assert.That(result.OrDefault(), Is.EqualTo(bar));
         }
 
         [Test]
         public void TestAndThenReturnsTheValueOfTheFunctionWhenCalledOnSome()
         {
-            var maybeString = new Maybe<string>("foo");
-            var result = maybeString.AndThen(s => new Maybe<string>(s + "bar"));
-            Assert.That(result.OrDefault(), Is.EqualTo("foobar"));
+            const string foo = "foo";
+            const string bar = "bar";
+            var maybeString = new Maybe<string>(foo);
+            var result = maybeString.AndThen(s => new Maybe<string>(s + bar));
+            Assert.That(result.OrDefault(), Is.EqualTo(foo + bar));
         }
 
         [Test]
@@ -406,17 +411,19 @@ namespace JME.UnionTypes.Tests
         [Test]
         public void TestOrElseReturnsSelfWhenCalledOnSome()
         {
-            var maybeString = new Maybe<string>("foo");
+            const string foo = "foo";
+            var maybeString = new Maybe<string>(foo);
             var result = maybeString.OrElse(() => new Maybe<string>("bar"));
-            Assert.That(result.OrDefault(), Is.EqualTo("foo"));
+            Assert.That(result.OrDefault(), Is.EqualTo(foo));
         }
 
         [Test]
         public void TestOrElseReturnsTheValueOfTheFunctionWhenCalledOnNone()
         {
+            const string bar = "bar";
             var maybeString = new Maybe<string>();
-            var result = maybeString.OrElse(() => new Maybe<string>("bar"));
-            Assert.That(result.OrDefault(), Is.EqualTo("bar"));
+            var result = maybeString.OrElse(() => new Maybe<string>(bar));
+            Assert.That(result.OrDefault(), Is.EqualTo(bar));
         }
     }
 }
