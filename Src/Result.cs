@@ -21,8 +21,16 @@ namespace JME.UnionTypes
         public sealed class ResultOk : Result<TOk, TErr>
         {
             private readonly TOk _value;
-            public override bool IsOk => true;
-            public override bool IsErr => false;
+
+            public override bool IsOk
+            {
+                get { return true; }
+            }
+
+            public override bool IsErr
+            {
+                get { return false; }
+            }
 
             public ResultOk(TOk value)
             {
@@ -63,8 +71,16 @@ namespace JME.UnionTypes
         public sealed class ResultErr : Result<TOk, TErr>
         {
             private readonly TErr _value;
-            public override bool IsOk => false;
-            public override bool IsErr => true;
+
+            public override bool IsOk
+            {
+                get { return false; }
+            }
+
+            public override bool IsErr
+            {
+                get { return true; }
+            }
 
             public ResultErr(TErr value)
             {
