@@ -3,38 +3,116 @@ using JetBrains.Annotations;
 
 namespace JME.UnionTypes
 {
-    public class Result<TOkay, TErr>
+    public abstract class Result<TOk, TErr>
     {
-        private readonly TErr _err;
-        private readonly TOkay _okay;
+        public abstract bool IsOk { get; }
+        public abstract bool IsErr { get; }
 
-        public Result([NotNull] TOkay okay)
+        public static Result<TOk, TErr> Ok(TOk value)
         {
-            if (okay == null) throw new ArgumentException("Argument to Result must not be null");
-            _okay = okay;
+            return new ResultOk(value);
         }
 
-        public Result([NotNull] TErr err)
+        public static Result<TOk, TErr> Err(TErr value)
         {
-            if (err == null) throw new ArgumentException("Argument to Result must not be null");
-            _err = err;
+            return new ResultErr(value);
         }
 
-        public void Match([InstantHandle] Action<TOkay> okay, [InstantHandle] Action<TErr> err)
+        public sealed class ResultOk : Result<TOk, TErr>
         {
-            if (_err != null)
+            private readonly TOk _value;
+            public override bool IsOk => true;
+            public override bool IsErr => false;
+
+            public ResultOk(TOk value)
             {
-                err(_err);
+                _value = value;
             }
-            else
+
+            public override void Match(Action<TOk> ok, Action<TErr> err)
             {
-                okay(_okay);
+                ok(_value);
+            }
+
+            public override TReturn Match<TReturn>(Func<TOk, TReturn> ok, Func<TErr, TReturn> err)
+            {
+                return ok(_value);
+            }
+
+            public override Maybe<TOk> Ok()
+            {
+                return new Maybe<TOk>(_value);
+            }
+
+            public override Maybe<TErr> Err()
+            {
+                return new Maybe<TErr>();
+            }
+
+            public override Result<TConverted, TErr> Map<TConverted>(Func<TOk, TConverted> fn)
+            {
+                return Result<TConverted, TErr>.Ok(fn(_value));
+            }
+
+            public override Result<TOk, TConverted> MapErr<TConverted>(Func<TErr, TConverted> fn)
+            {
+                return Result<TOk, TConverted>.Ok(_value);
             }
         }
 
-        public TReturn Match<TReturn>([InstantHandle] Func<TOkay, TReturn> okay, [InstantHandle] Func<TErr, TReturn> err)
+        public sealed class ResultErr : Result<TOk, TErr>
         {
-            return _err != null ? err(_err) : okay(_okay);
+            private readonly TErr _value;
+            public override bool IsOk => false;
+            public override bool IsErr => true;
+
+            public ResultErr(TErr value)
+            {
+                _value = value;
+            }
+
+            public override void Match(Action<TOk> ok, Action<TErr> err)
+            {
+                err(_value);
+            }
+
+            public override TReturn Match<TReturn>(Func<TOk, TReturn> ok, Func<TErr, TReturn> err)
+            {
+                return err(_value);
+            }
+
+            public override Maybe<TOk> Ok()
+            {
+                return new Maybe<TOk>();
+            }
+
+            public override Maybe<TErr> Err()
+            {
+                return new Maybe<TErr>(_value);
+            }
+
+            public override Result<TConverted, TErr> Map<TConverted>(Func<TOk, TConverted> fn)
+            {
+                return Result<TConverted, TErr>.Err(_value);
+            }
+
+            public override Result<TOk, TConverted> MapErr<TConverted>(Func<TErr, TConverted> fn)
+            {
+                return Result<TOk, TConverted>.Err(fn(_value));
+            }
         }
+
+        public abstract void Match([InstantHandle] Action<TOk> ok, [InstantHandle] Action<TErr> err);
+
+        public abstract TReturn Match<TReturn>([InstantHandle] Func<TOk, TReturn> ok,
+            [InstantHandle] Func<TErr, TReturn> err);
+
+        public abstract Maybe<TOk> Ok();
+
+        public abstract Maybe<TErr> Err();
+
+        public abstract Result<TConverted, TErr> Map<TConverted>(Func<TOk, TConverted> fn);
+
+        public abstract Result<TOk, TConverted> MapErr<TConverted>(Func<TErr, TConverted> fn);
     }
 }

@@ -69,7 +69,7 @@ namespace JME.UnionTypes
         public Result<T, TErr> OkayOr<TErr>(TErr err)
         {
             return Match(
-                some: x => Result<T, TErr>.Okay(x),
+                some: Result<T, TErr>.Ok,
                 none: () => Result<T, TErr>.Err(err));
         }
 
