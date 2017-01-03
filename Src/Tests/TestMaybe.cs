@@ -12,7 +12,7 @@ namespace JME.UnionTypes.Tests
         {
             var maybeInt = new Maybe<int>();
             Assert.That(maybeInt.IsNone);
-        }
+        } 
 
         [Test]
         public void TestNonePrimativeIsNotSome()
